@@ -85,8 +85,7 @@ app.get('/user/show', (req, res) => {
             res.status(200).json(data)
         })
         .catch(err => {
-            console.log(err)
-            res.status(404).send("I do't Know")
+            res.status(404).json(err)
         })
 
 })
@@ -150,7 +149,7 @@ app.post('/user/add', (req, res) => {
 app.post('/user', (req, res) => {
 
     db.collection('users')
-        .findOne(req.body)
+        .findOne({"email" : req.body.email})
         .then(a => {
             res.status(200).json(a)
         })
@@ -337,12 +336,12 @@ io.on("connection", (socket) => {
   //creating a room
   socket.on("join-room", (groupName) => {
     socket.join(groupName);
-    console.log(socket.adapter.rooms.get(groupName).size)
+    // console.log(socket.adapter.rooms.get(groupName).size)
   });
 
   socket.on("leave-room", (groupName) => {
     socket.leave(groupName);
-    console.log(groupName)
+    // console.log(groupName)
   });
 
 

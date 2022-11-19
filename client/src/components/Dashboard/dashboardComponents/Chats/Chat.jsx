@@ -15,6 +15,7 @@ export default function Chat({ chatFetch, socket }) {
 	}
 
 	const handleSubmit = async() => {
+		
 		try {
 			const url = "http://localhost:5000/group/chat"
 			const data = {groupName: chatData.name, message: message, from: email}
@@ -30,7 +31,7 @@ export default function Chat({ chatFetch, socket }) {
 
 	socket.on("recieve-message", data => console.log(data))
 
-
+ 
 
 	return (
 		<div className={styles.chat__container}>
