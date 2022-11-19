@@ -25,11 +25,11 @@ function Home() {
            <div className={styles.container1}>
             <div className={styles.container2}>Welcome to our community</div> 
             <div className={styles.container3}>#Social App</div>
-            {userName ?
+            <center>{userName ?
         <Logout/>
         :
         <Login />
-      }
+      }</center>
 
            </div>
            
