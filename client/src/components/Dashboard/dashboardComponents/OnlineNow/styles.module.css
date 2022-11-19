@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=McLaren&display=swap');
+
+.OnlineNow {
+	border-radius: 11px;
+	height: 220px;
+	box-shadow: 0 0 2px 2px rgba(0,0,0,0.2);
+	border-radius: 11px;
+}
+
+.heading {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 20px 0 15px;
+	border-radius: 11px 11px 0 0;
+	background: #735F32;
+	font-family: 'McLaren', cursive;
+}
+
+.online__green {
+	width: 20px;
+	height: 20px;
+	background: #24E92C;
+	border-radius: 50%;
+}
