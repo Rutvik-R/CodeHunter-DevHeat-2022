@@ -8,8 +8,6 @@ app.use(cors())
 
 app.use(express.json())
 
-let total_user;
-
 let db
 
 connectToDb((err) => {
