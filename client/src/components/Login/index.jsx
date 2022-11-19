@@ -16,6 +16,7 @@ export default function Login() {
 		console.log("Login Success! Current user: ", res.profileObj);
         localStorage.setItem('social-app',JSON.stringify(res.profileObj))
 		server(res.profileObj);
+        window.location = '/dashboard';
 	}
 
 	const onFailure = (res) => {
@@ -36,6 +37,8 @@ export default function Login() {
                 render={renderProps => (
                     <GoogleButton onClick={renderProps.onClick} disabled={renderProps.disabled}></GoogleButton>
                   )}
+
+        
 			/>
 		</div>
 	)

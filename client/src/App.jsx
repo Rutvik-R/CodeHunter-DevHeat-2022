@@ -13,6 +13,8 @@ function App() {
       <Routes>
         <Route exact path='/' element={<Home />} ></Route>
         <Route exact path='/dashboard' element={ <Dashboard />} ></Route>
+        <Route exact path='/login' ></Route>
+        {/* <Route exact path='/' ></Route> */}
       </Routes>
     </Router>
   )
