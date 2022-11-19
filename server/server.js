@@ -1,8 +1,8 @@
-const express = require('express')
-const { connectToDb, getDb } = require('./db')
-const cors = require('cors')
+const express = require("express");
+const { connectToDb, getDb } = require("./db");
+const cors = require("cors");
 
-// Get only 5 user http://localhost:5000/user/show?p=2 
+// Get only 5 user http://localhost:5000/user/show?p=2
 
 // Get all user data  http://localhost:5000/user/data_all
 
@@ -12,7 +12,7 @@ const cors = require('cors')
 
 // delete user delete http://localhost:5000/user/delete
 
-// Groups 
+// Groups
 
 // Add new group post http://localhost:5000/group/new
 
@@ -24,24 +24,20 @@ const cors = require('cors')
 
 // Add participate into group http://localhost:5000/group/enter    // beta form
 
+const app = express();
 
+app.use(cors());
 
-const app = express()
+app.use(express.json());
 
-app.use(cors())
+const http = require("http").Server(app);
 
-app.use(express.json())
-
-const http = require('http').Server(app);
-
-
-let db
+let db;
 
 connectToDb((err) => {
     if (!err) {
-        http.listen(5000, () => {
+        app.listen(5000, () => {
             console.log("started on 5000 !!!")
-
         })
         db = getDb()
     }
@@ -50,58 +46,58 @@ connectToDb((err) => {
     }
 })
 
-app.get('/', (req, res) => {
-    res.status(200).send("Server started !!!!!!!")
-})
+app.get("/", (req, res) => {
+  res.status(200).send("Server started !!!!!!!");
+});
 
-app.get('/user/show', (req, res) => {
+app.get("/user/show", (req, res) => {
+  const page = req.query.p || 0;
 
-    const page = req.query.p || 0
+  const datapage = 5;
 
-    const datapage = 5
+  let data = [];
 
-    let data = []
+  db.collection("users")
+    .find()
+    .skip(page * datapage)
+    .limit(datapage)
+    .forEach((a) => data.push(a))
+    .then(() => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(404).send("I do't Know");
+    });
+});
 
-    db.collection('users')
-        .find()
-        .skip(page * datapage)
-        .limit(datapage)
-        .forEach(a => data.push(a))
-        .then(() => {
-            res.status(200).json(data)
-        })
-        .catch(err => {
-            console.log(err)
-            res.status(404).send("I do't Know")
-        })
+app.get("/user/data_all", (req, res) => {
+  let data = [];
 
-})
+  db.collection("users")
+    .find()
+    .forEach((a) => data.push(a))
+    .then(() => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(404).send("I do't Know");
+    });
+});
 
-app.get('/user/data_all', (req, res) => {
-
-    let data = []
-
-    db.collection('users')
-        .find()
-        .forEach(a => data.push(a))
-        .then(() => {
-            res.status(200).json(data)
-        })
-        .catch(err => {
-            console.log(err)
-            res.status(404).send("I do't Know")
-        })
-
-})
+app.post("/user/add", (req, res) => {
+  let data = req.body;
 
 app.post('/user/add', (req, res) => {
     let data = req.body
+    console.log(data)
 
     db.collection('users')
         .findOne({ email: data["email"] })
         .then(doc => {
             if (doc != null) {
-                res.status(400).json({ "status": "Already exist" })
+                res.status(201).json({"status" : "Already exist"})
             }
             else {
                 db.collection('users')
@@ -115,20 +111,16 @@ app.post('/user/add', (req, res) => {
             }
         })
 
-
-})
-
-
-app.post('/user', (req, res) => {
-
-    db.collection('users')
-        .findOne(req.body)
-        .then(a => {
-            res.status(200).json(a)
-        })
-        .catch(err => {
-            res.status(404).json(err)
-        })
+app.post("/user", (req, res) => {
+  db.collection("users")
+    .findOne(req.body)
+    .then((a) => {
+      res.status(200).json(a);
+    })
+    .catch((err) => {
+      res.status(404).json(err);
+    });
+});
 
 })
 
@@ -140,7 +132,7 @@ app.delete('/user/delete', (req, res) => {
         .findOne(req.body)
         .then(a => {
             if (a == null) {
-                res.status(400).json({ "status": "Not Found" })
+                res.status(400).json({"status" : "Not Found"})
             }
             else {
                 db.collection('users')
@@ -240,6 +232,22 @@ app.post('/group/specific' , (req , res) => {
 
 
 // socket connection
+
+const io = require("socket.io")(http, {
+    cors: {
+        origin: "*"
+    }
+})
+
+io.on("connection", socket => {
+    console.log(socket.id)
+
+    //creating a room
+    socket.on('join-room', (groupName) => {
+        console.log(groupName)
+    })
+})
+
 
 const io = require("socket.io")(http, {
     cors: {
