@@ -10,7 +10,7 @@ const cors = require('cors')
 
 // find One user post http://localhost:5000/user
 
-// delete user deletehttp://localhost:5000/user/delete
+// delete user delete http://localhost:5000/user/delete
 
 
 const app = express()
@@ -80,13 +80,12 @@ app.get('/user/data_all', (req, res) => {
 
 app.post('/user/add', (req, res) => {
     let data = req.body
-    console.log(data)
 
     db.collection('users')
         .findOne({ email: data["email"] })
         .then(doc => {
             if (doc != null) {
-                res.status(201).json({"status" : "Already exist"})
+                res.status(400).json({ "status": "Already exist" })
             }
             else {
                 db.collection('users')
@@ -125,7 +124,7 @@ app.delete('/user/delete', (req, res) => {
         .findOne(req.body)
         .then(a => {
             if (a == null) {
-                res.status(400).json({"status" : "Not Found"})
+                res.status(400).json({ "status": "Not Found" })
             }
             else {
                 db.collection('users')
@@ -138,4 +137,23 @@ app.delete('/user/delete', (req, res) => {
                     })
             }
         })
+})
+
+
+app.post('/group/enter', (req, res) => {
+
+
+    db.collection('users')
+        .findOneAndUpdate({ email: req.body.email }, {
+            $push: {
+                groups: req.body.groupName
+            }
+        })
+        .then(result => {
+            res.status(200).json(result)
+        })
+        .catch(err => {
+            res.status(404).json(err)
+        })
+
 })
