@@ -8,6 +8,7 @@ app.use(cors())
 
 app.use(express.json())
 
+let total_user;
 
 let db
 
@@ -44,6 +45,38 @@ app.get('/user/show' , (req , res) => {
     .catch(err => {
         console.log(err)
         res.status(404).send("I do't Know")
+    })
+
+})
+
+app.get('/user/data_all' , (req , res) => {
+
+    let data = []
+
+    db.collection('users')
+    .find()
+    .forEach(a => data.push(a))
+    .then( () => {
+        res.status(200).json(data)
+    })
+    .catch(err => {
+        console.log(err)
+        res.status(404).send("I do't Know")
+    })
+
+})
+
+app.post('/user/add' , (req , res) => {
+    let data = req.body 
+    console.log(data)
+
+    db.collection('users')
+    .insertOne(data)
+    .then(result =>{
+        res.status(200).json(result)
+    })
+    .catch(err => {
+        res.status(404).json(err)
     })
 
 })
