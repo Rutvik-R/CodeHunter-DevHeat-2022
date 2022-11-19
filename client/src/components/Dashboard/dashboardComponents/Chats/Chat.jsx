@@ -1,4 +1,6 @@
 import styles from "./styles.module.css"
+
+export default function Chat() {
 import { useState } from "react"
 import axios from "axios"
 
