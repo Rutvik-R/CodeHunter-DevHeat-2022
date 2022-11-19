@@ -2,6 +2,17 @@ const express = require('express')
 const { connectToDb, getDb } = require('./db')
 const cors = require('cors')
 
+// Get only 5 user http://localhost:5000/user/show?p=2 
+
+// Get all user data  http://localhost:5000/user/data_all
+
+// post add user http://localhost:5000/user/add
+
+// find One user post http://localhost:5000/user
+
+// delete user deletehttp://localhost:5000/user/delete
+
+
 const app = express()
 
 app.use(cors())
@@ -128,4 +139,3 @@ app.delete('/user/delete', (req, res) => {
             }
         })
 })
-
