@@ -23,3 +23,27 @@ connectToDb((err) => {
     console.log(err)
   }
 })
+
+
+app.get('/user/show' , (req , res) => {
+
+    const page = req.query.p || 0
+
+    const datapage = 5 
+
+    let data = []
+
+    db.collection('users')
+    .find()
+    .skip(page*datapage)
+    .limit(datapage)
+    .forEach(a => data.push(a))
+    .then( () => {
+        res.status(200).json(data)
+    })
+    .catch(err => {
+        console.log(err)
+        res.status(404).send("I do't Know")
+    })
+
+})
