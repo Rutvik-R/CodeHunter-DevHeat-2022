@@ -9,9 +9,19 @@
     color: #FFFFFF;
 }
 .container1{
-    display:flex;
     margin:auto;
-    align-items: center;
     text-align: center;
-    font-size: ;
+    /* font-size: 3rem;
+    font-weight: 400; */
+}
+.container2{
+    margin: auto;
+    font-size: 3rem;
+    font-weight: 400;
+}
+.container3{
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    font-size: 1.7rem;;
+    font-weight: 250;
 }
