@@ -1,5 +1,4 @@
 import styles from "./styles.module.css"
-
 export default function Chat() {
 
 	const chats = ["first", "two", "three", "floor"]
