@@ -22,7 +22,7 @@ const cors = require('cors')
 
 // get specific group info post http://localhost:5000/group/specific
 
-// Add participate into group http://localhost:5000/group/enter    // beta form
+// Add participate into group http://localhost:5000/group/enter and  http://localhost:5000/user/group/enter  // with same body{email , groupName}
 
 
 
@@ -152,17 +152,81 @@ app.delete('/user/delete', (req, res) => {
         })
 })
 
+app.post('/user/group/enter', (req, res) => {
+
+    db.collection('users')
+        .findOneAndUpdate({ email: req.body.email }, {
+            $addToSet: {
+                groups: req.body.groupName
+            }
+        })
+        .then(result => {
+            res.status(200).json(result)
+        })
+        .catch(err => {
+            res.status(404).json(err)
+        })
+})
+
 // Groups
 
 app.post('/group/enter', (req, res) => {
 
-
-
-    db.collection('users')
-        .findOneAndUpdate({ email: req.body.email }, {
-            $push: {
-                groups: req.body.groupName
+    db.collection('groups')
+        .findOneAndUpdate({ name: req.body.groupName }, {
+            $addToSet : {
+                participate: req.body.email
             }
+        })
+        .then(result => {
+            res.status(200).json(result)
+        })
+        .catch(err => {
+            res.status(404).json(err)
+        })
+
+
+})
+
+
+
+app.get('/group/name', (req, res) => {
+    let data = []
+    db.collection('groups')
+        .find({}, { name: 1 })
+        .forEach(a => data.push(a.name))
+        .then(() => {
+            res.status(200).json(data)
+        })
+        .catch(err => {
+            res.status(404).json(err)
+        })
+
+})
+
+
+app.get('/group/Full_info', (req, res) => {
+    let data = []
+    db.collection('groups')
+        .find({}, { name: 1 })
+        .forEach(a => data.push(a))
+        .then(() => {
+            res.status(200).json(data)
+        })
+        .catch(err => {
+            res.status(404).json(err)
+        })
+
+})
+
+app.post('/group/new', (req, res) => {
+
+    db.collection('groups')
+        .insertOne({
+            "name": req.body.groupName,
+            "participate": [],
+            "chat": []
+
         })
         .then(result => {
             res.status(200).json(result)
@@ -173,64 +237,15 @@ app.post('/group/enter', (req, res) => {
 
 })
 
-
-
-app.get( '/group/name' , (req , res) => {
-    let data = []
-    db.collection('groups')
-    .find({} , {name : 1})
-    .forEach(a => data.push(a.name))
-    .then(() => {
-        res.status(200).json(data)
-    })
-    .catch(err => {
-        res.status(404).json(err)
-    })
-
-})
-
-
-app.get( '/group/Full_info' , (req , res) => {
-    let data = []
-    db.collection('groups')
-    .find({} , {name : 1})
-    .forEach(a => data.push(a))
-    .then(() => {
-        res.status(200).json(data)
-    })
-    .catch(err => {
-        res.status(404).json(err)
-    })
-
-})
-
-app.post('/group/new' , (req , res) => {
-    
-    db.collection('groups')
-    .insertOne({
-        "name" : req.body.groupName ,
-        "participate" : [] ,
-        "chat" : []
-
-    })
-    .then(result => {
-        res.status(200).json(result)
-    })
-    .catch(err => {
-        res.status(404).json(err)
-    })
-
-})
-
-app.post('/group/specific' , (req , res) => {
+app.post('/group/specific', (req, res) => {
 
     db.collection('groups')
-    .findOne(req.body)
-    .then(a => {
-        res.status(200).json(a)
-    })
-    .catch(err => {
-        res.status(404).json(err)
-    })
+        .findOne(req.body)
+        .then(a => {
+            res.status(200).json(a)
+        })
+        .catch(err => {
+            res.status(404).json(err)
+        })
 
 })
