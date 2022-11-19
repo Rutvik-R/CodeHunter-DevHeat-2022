@@ -19,13 +19,14 @@ app.use(cors())
 
 app.use(express.json())
 
+const http = require('http').Server(app);
+
 let db
 
 connectToDb((err) => {
     if (!err) {
-        app.listen(5000, () => {
+        http.listen(5000, () => {
             console.log("started on 5000 !!!")
-
         })
         db = getDb()
     }
@@ -138,4 +139,20 @@ app.delete('/user/delete', (req, res) => {
                     })
             }
         })
+})
+
+
+const io = require("socket.io")(http, {
+    cors: {
+        origin: "*"
+    }
+})
+
+io.on("connection", socket => {
+    console.log(socket.id)
+
+    //creating a room
+    socket.on('join-room', (groupName) => {
+        console.log(groupName)
+    })
 })

@@ -26,3 +26,21 @@
 	justify-content: center;
 	cursor: pointer;
 }
+
+.group__name {
+	border-bottom: 1px solid #735F32;
+	height: 50px;
+	width: 85%;
+	margin: auto;
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-end;
+	padding-left: 5px;
+	padding-bottom: 5px;
+	color: #ccc;
+	cursor: pointer;
+}
+
+.group__name:hover {
+	color: #735F32;
+}
