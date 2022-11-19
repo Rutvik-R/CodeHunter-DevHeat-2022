@@ -77,7 +77,7 @@ app.post('/user/add', (req, res) => {
         .findOne({ email: data["email"] })
         .then(doc => {
             if (doc != null) {
-                res.status(400).send("Already exist")
+                res.status(400).json({"status" : "Already exist"})
             }
             else {
                 db.collection('users')
@@ -108,6 +108,7 @@ app.post('/user', (req, res) => {
 
 })
 
+
 app.delete('/user/delete', (req, res) => {
 
 
@@ -115,7 +116,7 @@ app.delete('/user/delete', (req, res) => {
         .findOne(req.body)
         .then(a => {
             if (a == null) {
-                res.status(400).send("Not Found")
+                res.status(400).json({"status" : "Not Found"})
             }
             else {
                 db.collection('users')
