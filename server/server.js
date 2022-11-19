@@ -86,7 +86,7 @@ app.post('/user/add', (req, res) => {
         .findOne({ email: data["email"] })
         .then(doc => {
             if (doc != null) {
-                res.status(400).json({"status" : "Already exist"})
+                res.status(201).json({"status" : "Already exist"})
             }
             else {
                 db.collection('users')
