@@ -2,15 +2,21 @@ const express = require('express')
 const { connectToDb, getDb } = require('./db')
 const cors = require('cors')
 
+let date_ob = new Date()
+
 // Get only 5 user http://localhost:5000/user/show?p=2 
 
 // Get all user data  http://localhost:5000/user/data_all
+
+// Get all user email http://localhost:5000/user/all_email
 
 // post add user http://localhost:5000/user/add
 
 // find One user post http://localhost:5000/user
 
 // delete user delete http://localhost:5000/user/delete
+
+
 
 // Groups 
 
@@ -23,6 +29,14 @@ const cors = require('cors')
 // get specific group info post http://localhost:5000/group/specific
 
 // Add participate into group http://localhost:5000/group/enter and  http://localhost:5000/user/group/enter  // with same body{email , groupName}
+
+// Remove participate into group http://localhost:5000/group/remove && http://localhost:5000//user/group/remove     // with same body{email , groupName}
+
+
+
+// Chat
+
+// Add chat in group http://localhost:5000/group/chat   formate :- {groupName , message , from }
 
 
 
@@ -89,6 +103,20 @@ app.get('/user/data_all', (req, res) => {
             res.status(404).send("I do't Know")
         })
 
+})
+
+app.get('/user/all_email' , (req , res) => {
+    let data = []
+
+    db.collection('users')
+    .find()
+    .forEach(a => data.push(a.email) )
+    .then(() => {
+        res.status(200).json(data)
+    })
+    .catch(err => {
+        res.status(404).json(err)
+    })
 })
 
 app.post('/user/add', (req, res) => {
@@ -168,6 +196,21 @@ app.post('/user/group/enter', (req, res) => {
         })
 })
 
+app.post('/user/group/remove' , (req , res) => {
+    db.collection('users')
+    .findOneAndUpdate({email : req.body.email} , {
+        $pull : {
+            groups : req.body.groupName
+        }
+    })
+    .then(result => {
+        res.status(200).json(result)
+    })
+    .catch(err => {
+        res.status(404).json(err)
+    })
+})
+
 // Groups
 
 app.post('/group/enter', (req, res) => {
@@ -185,6 +228,24 @@ app.post('/group/enter', (req, res) => {
             res.status(404).json(err)
         })
 
+
+})
+
+app.get('/group/enter_all' , (req , res) => {
+    let emails = req.body.emails
+
+    db.collection('groups')
+    .findOneAndUpdate({name : req.body.groupName} , {
+        $addToSet : {
+            participate : emails.forEach
+        }
+    })
+    .then(result => {
+        res.status(200).json(result)
+    })
+    .catch(err => {
+        res.status(404).json(err)
+    })
 
 })
 
@@ -249,3 +310,45 @@ app.post('/group/specific', (req, res) => {
         })
 
 })
+
+app.post('/group/remove' , (req , res) => {
+
+    db.collection('groups')
+        .findOneAndUpdate({name : req.body.groupName} , {
+            $pull : {
+                participate : req.body.email
+            }
+        })
+        .then(result => {
+            res.status(200).json(result)
+        })
+        .catch(err => {
+            res.status(400).json(err)
+        })
+
+})
+
+// Chat
+
+app.post("/group/chat" , (req , res) => {
+    console.log(req.body)
+
+    db.collection('groups')
+    .findOneAndUpdate({name : req.body.groupName} , {
+        $addToSet : {
+            chat : {
+                message : req.body.message ,
+                from : req.body.from ,
+                created_time : date_ob.toISOString()
+            }
+        }
+    })
+    .then(result => {
+        res.status(200).json(result)
+    })
+    .catch(err =>{
+        res.status(400).json(err)
+    })
+
+})
+
