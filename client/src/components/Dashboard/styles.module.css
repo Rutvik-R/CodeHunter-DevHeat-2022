@@ -1,0 +1,13 @@
+.user__dashboard {
+	background: #282A3A;
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	align-items: center;
+}
+
+.select__chats {
+	width: 27%;
+	height: 97vh;
+	margin: auto;
+}
