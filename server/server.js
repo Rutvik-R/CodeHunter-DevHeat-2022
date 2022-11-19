@@ -32,11 +32,14 @@ app.use(cors())
 
 app.use(express.json())
 
+const http = require('http').Server(app);
+
+
 let db
 
 connectToDb((err) => {
     if (!err) {
-        app.listen(5000, () => {
+        http.listen(5000, () => {
             console.log("started on 5000 !!!")
 
         })
