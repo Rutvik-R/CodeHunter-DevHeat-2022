@@ -1,5 +1,7 @@
 import styles from "./styles.module.css"
+
 import { useState, useEffect } from "react"
+
 import axios from "axios"
 
 export default function Chat({chatGroup, chatFetch, socket }) {
