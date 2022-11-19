@@ -70,10 +70,26 @@ app.post('/user/add' , (req , res) => {
     let data = req.body 
     console.log(data)
 
+    db.
+
     db.collection('users')
     .insertOne(data)
     .then(result =>{
         res.status(200).json(result)
+    })
+    .catch(err => {
+        res.status(404).json(err)
+    })
+
+})
+
+
+app.post('/user' , (req , res) => { 
+
+    db.collection('users')
+    .findOne(req.body)
+    .then(a => {
+        res.status(200).json(a)
     })
     .catch(err => {
         res.status(404).json(err)
