@@ -82,3 +82,7 @@
 	max-width: 300px;
 	border-radius: 10px;
 }
+
+.divBox {
+	display: flex;
+}

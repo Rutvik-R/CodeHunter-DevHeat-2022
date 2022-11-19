@@ -332,22 +332,25 @@ const io = require("socket.io")(http, {
 });
 
 io.on("connection", (socket) => {
-    console.log(socket.id);
+  console.log(socket.id);
 
-    //creating a room
-    socket.on("join-room", (groupName) => {
-        socket.join(groupName);
-        console.log(socket.adapter.rooms.get(groupName).size)
-    });
+  //creating a room
+  socket.on("join-room", (groupName) => {
+    socket.join(groupName);
+    console.log(socket.adapter.rooms.get(groupName).size)
+  });
 
-    socket.on("leave-room", (groupName) => {
-        socket.leave(groupName);
-        console.log(groupName)
-    });
+  socket.on("leave-room", (groupName) => {
+    socket.leave(groupName);
+    console.log(groupName)
+  });
+
+
+  socket.on("send-message", (data) => {
+    io.to(data.groupName).emit("recieve-message", data)
+  })
+
 });
-
-
-
 
 
 // Chat

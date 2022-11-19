@@ -31,6 +31,7 @@ export default function Dashboard() {
     <div className={styles.user__dashboard}>
       <Chat 
         chatFetch={chatFetch}
+        socket={socket}
       />
       <div className={styles.select__chats}>
         <OnlineNow />
