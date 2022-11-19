@@ -336,6 +336,7 @@ io.on("connection", (socket) => {
 
   //creating a room
   socket.on("join-room", (groupName) => {
+    console.log(groupName)
     socket.join(groupName);
     console.log(socket.adapter.rooms.get(groupName).size)
   });
@@ -347,7 +348,8 @@ io.on("connection", (socket) => {
 
 
   socket.on("send-message", (data) => {
-    io.to(data.groupName).emit("recieve-message", data)
+    console.log(data)
+    io.to(`#${data.groupName}`).emit("recieve-message", data)
   })
 
 });
