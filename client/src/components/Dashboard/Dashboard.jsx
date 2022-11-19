@@ -11,6 +11,7 @@ const socket = io("http://localhost:5000");
 
 socket.on("connect", () => {
   console.log(`${socket.id}`);
+  socket.emit('storeClientInfo', { customId: JSON.parse(localStorage.getItem("social-app")).email} );
 });
 
 export default function Dashboard() {
@@ -34,7 +35,9 @@ export default function Dashboard() {
         socket={socket}
       />
       <div className={styles.select__chats}>
-        <OnlineNow />
+        <OnlineNow 
+          socket={socket}
+        />
         <Selectchats
           setChatFetch={setChatFetch}
           groupSelected={groupSelected}

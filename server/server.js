@@ -324,7 +324,7 @@ app.post('/group/remove', (req, res) => {
 })
 
 // socket connection
-
+var clients =[];
 const io = require("socket.io")(http, {
     cors: {
         origin: "*",
@@ -332,7 +332,34 @@ const io = require("socket.io")(http, {
 });
 
 io.on("connection", (socket) => {
-  console.log(socket.id);
+
+
+  socket.on('storeClientInfo', function (data) {
+
+      var clientInfo = new Object();
+      clientInfo.customId = data.customId;
+      clientInfo.clientId = socket.id;
+      clients.push(clientInfo);
+      console.log(clients);
+      io.emit("clients", clients)
+  });
+
+  socket.on('disconnect', function (data) {
+
+      for( var i=0, len=clients.length; i<len; ++i ){
+          var c = clients[i];
+
+          if(c.clientId == socket.id){
+              clients.splice(i,1);
+              break;
+          }
+      }
+
+  });
+
+
+
+
 
   //creating a room
   socket.on("join-room", (groupName) => {
@@ -351,6 +378,8 @@ io.on("connection", (socket) => {
     console.log(data)
     io.to(`#${data.groupName}`).emit("recieve-message", data)
   })
+
+
 
 });
 

@@ -23,3 +23,32 @@
 	background: #24E92C;
 	border-radius: 50%;
 }
+
+.online__profile {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
+	height: calc(100% - 70px);
+	overflow: scroll;
+}
+
+.user__profile {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	border: 1px solid white;
+	background: #7D7272;
+}
+
+.tmp_profile {
+	width: 50px;
+	height: 50px;
+	margin: 10px;
+	cursor: pointer;
+}
+
+.online__profile div {
+	font-size: 10px;
+	text-align: center;
+	width: 50px;
+}
