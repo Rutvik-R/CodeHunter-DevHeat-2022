@@ -12,6 +12,19 @@ const cors = require('cors')
 
 // delete user delete http://localhost:5000/user/delete
 
+// Groups 
+
+// Add new group post http://localhost:5000/group/new
+
+// Get add group name get http://localhost:5000/group/name
+
+// get full data get http://localhost:5000/group/Full_info
+
+// get specific group info post http://localhost:5000/group/specific
+
+// Add participate into group http://localhost:5000/group/enter    // beta form
+
+
 
 const app = express()
 
@@ -139,8 +152,10 @@ app.delete('/user/delete', (req, res) => {
         })
 })
 
+// Groups
 
 app.post('/group/enter', (req, res) => {
+
 
 
     db.collection('users')
@@ -155,5 +170,67 @@ app.post('/group/enter', (req, res) => {
         .catch(err => {
             res.status(404).json(err)
         })
+
+})
+
+
+
+app.get( '/group/name' , (req , res) => {
+    let data = []
+    db.collection('groups')
+    .find({} , {name : 1})
+    .forEach(a => data.push(a.name))
+    .then(() => {
+        res.status(200).json(data)
+    })
+    .catch(err => {
+        res.status(404).json(err)
+    })
+
+})
+
+
+app.get( '/group/Full_info' , (req , res) => {
+    let data = []
+    db.collection('groups')
+    .find({} , {name : 1})
+    .forEach(a => data.push(a))
+    .then(() => {
+        res.status(200).json(data)
+    })
+    .catch(err => {
+        res.status(404).json(err)
+    })
+
+})
+
+app.post('/group/new' , (req , res) => {
+    
+    db.collection('groups')
+    .insertOne({
+        "name" : req.body.groupName ,
+        "participate" : [] ,
+        "chat" : []
+
+    })
+    .then(result => {
+        res.status(200).json(result)
+    })
+    .catch(err => {
+        res.status(404).json(err)
+    })
+
+})
+
+app.post('/group/specific' , (req , res) => {
+
+    db.collection('groups')
+    .findOne(req.body)
+    .then(a => {
+        res.status(200).json(a)
+    })
+    .catch(err => {
+        res.status(404).json(err)
+    })
 
 })
