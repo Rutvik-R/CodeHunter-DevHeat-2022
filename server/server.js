@@ -1,10 +1,12 @@
-const express = require('express')
-const { connectToDb, getDb } = require('./db')
-const cors = require('cors')
+const express = require("express");
+const { connectToDb, getDb } = require("./db");
+const cors = require("cors");
+
 
 let date_ob = new Date()
 
 // Get only 5 user http://localhost:5000/user/show?p=2 
+
 
 // Get all user data  http://localhost:5000/user/data_all
 
@@ -15,7 +17,6 @@ let date_ob = new Date()
 // find One user post http://localhost:5000/user
 
 // delete user delete http://localhost:5000/user/delete
-
 
 
 // Groups 
@@ -40,26 +41,27 @@ let date_ob = new Date()
 
 
 
-const app = express()
 
-app.use(cors())
+const app = express();
 
-app.use(express.json())
+app.use(cors());
 
-let db
+app.use(express.json());
+
+const http = require("http").Server(app);
+
+let db;
 
 connectToDb((err) => {
-    if (!err) {
-        app.listen(5000, () => {
-            console.log("started on 5000 !!!")
-
-        })
-        db = getDb()
-    }
-    else {
-        console.log(err)
-    }
-})
+  if (!err) {
+    http.listen(5000, () => {
+      console.log("started on 5000 !!!");
+    });
+    db = getDb();
+  } else {
+    console.log(err);
+  }
+});
 
 app.get('/', (req, res) => {
     res.status(200).send("Server started !!!!!!!")
@@ -206,30 +208,32 @@ app.post('/user/group/remove' , (req , res) => {
     .then(result => {
         res.status(200).json(result)
     })
-    .catch(err => {
-        res.status(404).json(err)
-    })
-})
+    .catch((err) => {
+      console.log(err);
+      res.status(404).send("I do't Know");
+    });
+});
+
 
 // Groups
 
-app.post('/group/enter', (req, res) => {
-
-    db.collection('groups')
-        .findOneAndUpdate({ name: req.body.groupName }, {
-            $addToSet : {
-                participate: req.body.email
-            }
-        })
-        .then(result => {
-            res.status(200).json(result)
-        })
-        .catch(err => {
-            res.status(404).json(err)
-        })
-
-
-})
+app.post("/group/enter", (req, res) => {
+  db.collection("users")
+    .findOneAndUpdate(
+      { email: req.body.email },
+      {
+        $push: {
+          groups: req.body.groupName,
+        },
+      }
+    )
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      res.status(404).json(err);
+    });
+});
 
 app.get('/group/enter_all' , (req , res) => {
     let emails = req.body.emails
@@ -249,67 +253,57 @@ app.get('/group/enter_all' , (req , res) => {
 
 })
 
+app.get("/group/name", (req, res) => {
+  let data = [];
+  db.collection("groups")
+    .find({}, { name: 1 })
+    .forEach((a) => data.push(a.name))
+    .then(() => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      res.status(404).json(err);
+    });
+});
 
+app.get("/group/Full_info", (req, res) => {
+  let data = [];
+  db.collection("groups")
+    .find({}, { name: 1 })
+    .forEach((a) => data.push(a))
+    .then(() => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      res.status(404).json(err);
+    });
+});
 
-app.get('/group/name', (req, res) => {
-    let data = []
-    db.collection('groups')
-        .find({}, { name: 1 })
-        .forEach(a => data.push(a.name))
-        .then(() => {
-            res.status(200).json(data)
-        })
-        .catch(err => {
-            res.status(404).json(err)
-        })
+app.post("/group/new", (req, res) => {
+  db.collection("groups")
+    .insertOne({
+      name: req.body.groupName,
+      participate: [],
+      chat: [],
+    })
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      res.status(404).json(err);
+    });
+});
 
-})
-
-
-app.get('/group/Full_info', (req, res) => {
-    let data = []
-    db.collection('groups')
-        .find({}, { name: 1 })
-        .forEach(a => data.push(a))
-        .then(() => {
-            res.status(200).json(data)
-        })
-        .catch(err => {
-            res.status(404).json(err)
-        })
-
-})
-
-app.post('/group/new', (req, res) => {
-
-    db.collection('groups')
-        .insertOne({
-            "name": req.body.groupName,
-            "participate": [],
-            "chat": []
-
-        })
-        .then(result => {
-            res.status(200).json(result)
-        })
-        .catch(err => {
-            res.status(404).json(err)
-        })
-
-})
-
-app.post('/group/specific', (req, res) => {
-
-    db.collection('groups')
-        .findOne(req.body)
-        .then(a => {
-            res.status(200).json(a)
-        })
-        .catch(err => {
-            res.status(404).json(err)
-        })
-
-})
+app.post("/group/specific", (req, res) => {
+  db.collection("groups")
+    .findOne(req.body)
+    .then((a) => {
+      res.status(200).json(a);
+    })
+    .catch((err) => {
+      res.status(404).json(err);
+    });
+});
 
 app.post('/group/remove' , (req , res) => {
 
@@ -327,6 +321,34 @@ app.post('/group/remove' , (req , res) => {
         })
 
 })
+
+// socket connection
+
+const io = require("socket.io")(http, {
+  cors: {
+    origin: "*",
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log(socket.id);
+
+  //creating a room
+  socket.on("join-room", (groupName) => {
+    socket.join(groupName);
+    console.log(socket.adapter.rooms.get(groupName).size)
+  });
+
+  socket.on("leave-room", (groupName) => {
+    socket.leave(groupName);
+    console.log(groupName)
+  });
+});
+ 
+})
+
+
+
 
 // Chat
 
