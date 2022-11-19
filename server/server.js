@@ -1,7 +1,7 @@
 const express = require("express");
 const { connectToDb, getDb } = require("./db");
 const cors = require("cors");
-
+// const { Schema } = require("mongoose");
 
 let date_ob = new Date()
 
@@ -46,6 +46,7 @@ const app = express();
 
 app.use(cors());
 
+
 app.use(express.json());
 
 const http = require("http").Server(app);
@@ -53,14 +54,14 @@ const http = require("http").Server(app);
 let db;
 
 connectToDb((err) => {
-  if (!err) {
-    http.listen(5000, () => {
-      console.log("started on 5000 !!!");
-    });
-    db = getDb();
-  } else {
-    console.log(err);
-  }
+    if (!err) {
+        http.listen(5000, () => {
+            console.log("started on 5000 !!!");
+        });
+        db = getDb();
+    } else {
+        console.log(err);
+    }
 });
 
 app.get('/', (req, res) => {
@@ -107,18 +108,18 @@ app.get('/user/data_all', (req, res) => {
 
 })
 
-app.get('/user/all_email' , (req , res) => {
+app.get('/user/all_email', (req, res) => {
     let data = []
 
     db.collection('users')
-    .find()
-    .forEach(a => data.push(a.email) )
-    .then(() => {
-        res.status(200).json(data)
-    })
-    .catch(err => {
-        res.status(404).json(err)
-    })
+        .find()
+        .forEach(a => data.push(a.email))
+        .then(() => {
+            res.status(200).json(data)
+        })
+        .catch(err => {
+            res.status(404).json(err)
+        })
 })
 
 app.post('/user/add', (req, res) => {
@@ -198,119 +199,119 @@ app.post('/user/group/enter', (req, res) => {
         })
 })
 
-app.post('/user/group/remove' , (req , res) => {
+app.post('/user/group/remove', (req, res) => {
     db.collection('users')
-    .findOneAndUpdate({email : req.body.email} , {
-        $pull : {
-            groups : req.body.groupName
-        }
-    })
-    .then(result => {
-        res.status(200).json(result)
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(404).send("I do't Know");
-    });
+        .findOneAndUpdate({ email: req.body.email }, {
+            $pull: {
+                groups: req.body.groupName
+            }
+        })
+        .then(result => {
+            res.status(200).json(result)
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(404).send("I do't Know");
+        });
 });
 
 
 // Groups
 
 app.post("/group/enter", (req, res) => {
-  db.collection("users")
-    .findOneAndUpdate(
-      { email: req.body.email },
-      {
-        $push: {
-          groups: req.body.groupName,
-        },
-      }
-    )
-    .then((result) => {
-      res.status(200).json(result);
-    })
-    .catch((err) => {
-      res.status(404).json(err);
-    });
+    db.collection("users")
+        .findOneAndUpdate(
+            { email: req.body.email },
+            {
+                $push: {
+                    groups: req.body.groupName,
+                },
+            }
+        )
+        .then((result) => {
+            res.status(200).json(result);
+        })
+        .catch((err) => {
+            res.status(404).json(err);
+        });
 });
 
-app.get('/group/enter_all' , (req , res) => {
+app.get('/group/enter_all', (req, res) => {
     let emails = req.body.emails
 
     db.collection('groups')
-    .findOneAndUpdate({name : req.body.groupName} , {
-        $addToSet : {
-            participate : emails.forEach
-        }
-    })
-    .then(result => {
-        res.status(200).json(result)
-    })
-    .catch(err => {
-        res.status(404).json(err)
-    })
+        .findOneAndUpdate({ name: req.body.groupName }, {
+            $addToSet: {
+                participate: emails.forEach
+            }
+        })
+        .then(result => {
+            res.status(200).json(result)
+        })
+        .catch(err => {
+            res.status(404).json(err)
+        })
 
 })
 
 app.get("/group/name", (req, res) => {
-  let data = [];
-  db.collection("groups")
-    .find({}, { name: 1 })
-    .forEach((a) => data.push(a.name))
-    .then(() => {
-      res.status(200).json(data);
-    })
-    .catch((err) => {
-      res.status(404).json(err);
-    });
+    let data = [];
+    db.collection("groups")
+        .find({}, { name: 1 })
+        .forEach((a) => data.push(a.name))
+        .then(() => {
+            res.status(200).json(data);
+        })
+        .catch((err) => {
+            res.status(404).json(err);
+        });
 });
 
 app.get("/group/Full_info", (req, res) => {
-  let data = [];
-  db.collection("groups")
-    .find({}, { name: 1 })
-    .forEach((a) => data.push(a))
-    .then(() => {
-      res.status(200).json(data);
-    })
-    .catch((err) => {
-      res.status(404).json(err);
-    });
+    let data = [];
+    db.collection("groups")
+        .find({}, { name: 1 })
+        .forEach((a) => data.push(a))
+        .then(() => {
+            res.status(200).json(data);
+        })
+        .catch((err) => {
+            res.status(404).json(err);
+        });
 });
 
 app.post("/group/new", (req, res) => {
-  db.collection("groups")
-    .insertOne({
-      name: req.body.groupName,
-      participate: [],
-      chat: [],
-    })
-    .then((result) => {
-      res.status(200).json(result);
-    })
-    .catch((err) => {
-      res.status(404).json(err);
-    });
+    db.collection("groups")
+        .insertOne({
+            name: req.body.groupName,
+            participate: [],
+            chat: [],
+        })
+        .then((result) => {
+            res.status(200).json(result);
+        })
+        .catch((err) => {
+            res.status(404).json(err);
+        });
 });
 
 app.post("/group/specific", (req, res) => {
-  db.collection("groups")
-    .findOne(req.body)
-    .then((a) => {
-      res.status(200).json(a);
-    })
-    .catch((err) => {
-      res.status(404).json(err);
-    });
+    db.collection("groups")
+        .findOne(req.body)
+        .then((a) => {
+            res.status(200).json(a);
+        })
+        .catch((err) => {
+            res.status(404).json(err);
+        });
 });
 
-app.post('/group/remove' , (req , res) => {
+app.post('/group/remove', (req, res) => {
 
     db.collection('groups')
-        .findOneAndUpdate({name : req.body.groupName} , {
-            $pull : {
-                participate : req.body.email
+        .findOneAndUpdate({ name: req.body.groupName }, {
+            $pull: {
+                participate: req.body.email
             }
         })
         .then(result => {
@@ -325,52 +326,50 @@ app.post('/group/remove' , (req , res) => {
 // socket connection
 
 const io = require("socket.io")(http, {
-  cors: {
-    origin: "*",
-  },
+    cors: {
+        origin: "*",
+    },
 });
 
 io.on("connection", (socket) => {
-  console.log(socket.id);
+    console.log(socket.id);
 
-  //creating a room
-  socket.on("join-room", (groupName) => {
-    socket.join(groupName);
-    console.log(socket.adapter.rooms.get(groupName).size)
-  });
+    //creating a room
+    socket.on("join-room", (groupName) => {
+        socket.join(groupName);
+        console.log(socket.adapter.rooms.get(groupName).size)
+    });
 
-  socket.on("leave-room", (groupName) => {
-    socket.leave(groupName);
-    console.log(groupName)
-  });
+    socket.on("leave-room", (groupName) => {
+        socket.leave(groupName);
+        console.log(groupName)
+    });
 });
- 
-})
+
 
 
 
 
 // Chat
 
-app.post("/group/chat" , (req , res) => {
-    console.log(req.body)
+app.post("/group/chat", (req, res) => {
 
     db.collection('groups')
-    .findOneAndUpdate({name : req.body.groupName} , {
-        $addToSet : {
-            chat : {
-                message : req.body.message ,
-                from : req.body.from ,
-                created_time : date_ob.toISOString()
+        .findOneAndUpdate({ name: req.body.groupName }, {
+            $addToSet: {
+                chat: {
+                    message: req.body.message,
+                    from: req.body.from,
+                    created_time: date_ob.toISOString()
+                }
             }
-        }
-    })
-    .then(result => {
-        res.status(200).json(result)
-    })
-    .catch(err =>{
-        res.status(400).json(err)
-    })
+        })
+        .then(result => {
+            res.status(200).json(result)
+        })
+        .catch(err => {
+            res.status(404).json(err)
+        })
 
 })
 
