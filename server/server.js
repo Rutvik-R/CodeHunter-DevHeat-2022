@@ -234,3 +234,21 @@ app.post('/group/specific' , (req , res) => {
     })
 
 })
+
+
+// socket connection
+
+const io = require("socket.io")(http, {
+    cors: {
+        origin: "*"
+    }
+})
+
+io.on("connection", socket => {
+    console.log(socket.id)
+
+    //creating a room
+    socket.on('join-room', (groupName) => {
+        console.log(groupName)
+    })
+})
