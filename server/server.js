@@ -343,11 +343,13 @@ io.on("connection", (socket) => {
     socket.leave(groupName);
     console.log(groupName)
   });
+
+
+  socket.on("send-message", (data) => {
+    io.to(data.groupName).emit("recieve-message", data)
+  })
+
 });
- 
-})
-
-
 
 
 // Chat
