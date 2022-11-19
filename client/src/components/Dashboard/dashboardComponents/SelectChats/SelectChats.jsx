@@ -1,10 +1,40 @@
 import styles from "./styles.module.css"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import axios from "axios"
 
-export default function SelectChats({ groupSelected, setGroupSelected, socket }) {
+export default function SelectChats({setChatFetch, groupSelected, setGroupSelected, socket }) {
 	const [group, setGroup] = useState("option1")
 
 	const [listGroup, setListGroup] = useState(["Developer", "Finance", "BookClub"])
+
+	const fetchGroups = async() => {
+		try {
+			const url = "http://localhost:5000/group/name"
+			const res = await axios.get(url)
+			setListGroup(res.data)
+		} catch (err) {
+			console.log(err);
+		}
+	}
+
+	useEffect(() => {
+		fetchGroups()
+	}, [])
+
+
+	const fetchChat = async() => {
+	    try {
+	      const url = "http://localhost:5000/group/specific"
+	      const res = await axios.post(url, {name: groupSelected.slice(1)})
+	      setChatFetch(res.data)
+	    } catch (err) {
+	      console.log(err)
+	    }
+	}
+
+	useEffect(() => {
+		fetchChat()
+	}, [groupSelected])
 
 	const handleClick = (e) => {
 		if (e.target.id !== group) {

@@ -1,19 +1,23 @@
 import styles from "./styles.module.css"
+import { useState } from "react"
 
-export default function Chat() {
+export default function Chat({ chatFetch }) {
 
-	const chats = ["first", "two", "three", "floor"]
+	let chatData = chatFetch
+	let chats = chatData && chatData.chat
+
+	const email = JSON.parse(localStorage.getItem("social-app")).email
 
 	return (
 		<div className={styles.chat__container}>
 			<div className={styles.chat__userName}>
 				<div className={styles.chat__profile} style={{background: "#BC6565"}}></div>
-				<div className={styles.chat__firstName}>userName</div>
+				<div className={styles.chat__firstName}>{chatData && chatData.name}</div>
 			</div>
 			<div className={styles.list__chats}>
-				{chats.map((item, index) => {
+				{chats && chats.map((item, index) => {
 					return (
-						<p key={index}>{item}</p>
+						<div className={styles.message__actual}>{item.message}</div>
 					)
 				}).reverse()}
 			</div>

@@ -70,3 +70,15 @@
 	background: #699BF7;
 	color: white;
 }
+
+
+.message__actual {
+	width: fit-content;
+	padding: 5px;
+	padding-left: 10px;
+	padding-right: 10px;
+	margin: 10px;
+	background: #272E65;
+	max-width: 300px;
+	border-radius: 10px;
+}
