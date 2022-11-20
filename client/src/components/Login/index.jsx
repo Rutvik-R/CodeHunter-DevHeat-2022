@@ -15,8 +15,8 @@ export default function Login() {
 	const onSuccess = (res) => {
 		console.log("Login Success! Current user: ", res.profileObj);
         localStorage.setItem('social-app',JSON.stringify(res.profileObj))
-		server(res.profileObj);
-        window.location = '/dashboard';
+				server(res.profileObj)
+        .then(() => window.location = '/dashboard')
 	}
 
 	const onFailure = (res) => {

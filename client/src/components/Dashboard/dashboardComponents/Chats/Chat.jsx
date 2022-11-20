@@ -3,6 +3,7 @@ import styles from "./styles.module.css"
 import { useState, useEffect } from "react"
 
 import axios from "axios"
+import Logout from "../../../Logout/index"
 
 export default function Chat({chatGroup, chatFetch, socket }) {
 
@@ -42,13 +43,12 @@ export default function Chat({chatGroup, chatFetch, socket }) {
 		})
 	}, [socket])
 
- 
-
 	return (
 		<div className={styles.chat__container}>
 			<div className={styles.chat__userName}>
 				<div className={styles.chat__profile} style={{background: "#BC6565"}}></div>
 				<div className={styles.chat__firstName}>{chatGroup}</div>
+				<div className={styles.chat__logout}>{<Logout />}</div>
 			</div>
 			<div className={styles.list__chats}>
 				{cc && cc.map((item, index) => {

@@ -6,6 +6,8 @@ export default function Logout() {
 
 	const onSuccess = () => {
 		console.log("Log out successfully");
+		localStorage.removeItem("social-app")
+		window.location = "/"
 		// setUserName()
 	}
 
