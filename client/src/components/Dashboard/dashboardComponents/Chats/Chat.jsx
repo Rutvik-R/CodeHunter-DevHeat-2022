@@ -1,5 +1,7 @@
 import styles from "./styles.module.css"
+
 import { useState, useEffect } from "react"
+
 import axios from "axios"
 import Logout from "../../../Logout/index"
 
@@ -21,6 +23,7 @@ export default function Chat({chatGroup, chatFetch, socket }) {
 	}
 
 	const handleSubmit = async() => {
+		
 		try {
 			const url = "http://localhost:5000/group/chat"
 			const data = {groupName: chatGroup, message: message, from: email}
@@ -39,7 +42,6 @@ export default function Chat({chatGroup, chatFetch, socket }) {
 			setcc(prev => [...prev, date])
 		})
 	}, [socket])
-
 
 	return (
 		<div className={styles.chat__container}>
