@@ -21,16 +21,16 @@ export default function Dashboard() {
   const [prevGroupSelected, setPrevGroupSelected] = useState(null)
   
   useEffect(() => {
-    socket.emit("leave-room", prevGroupSelected);
-    prevGroupSelected && socket.emit("join-room", groupSelected);
+    prevGroupSelected && socket.emit("leave-room", prevGroupSelected);
+    socket.emit("join-room", groupSelected);
     setPrevGroupSelected(groupSelected)
   }, [groupSelected]);
-
 
   return (
     <div className={styles.user__dashboard}>
       <Chat 
-        chatFetch={chatFetch}
+        chatGroup={chatFetch && chatFetch.name}
+        chatFetch={chatFetch && chatFetch.chat}
         socket={socket}
       />
       <div className={styles.select__chats}>

@@ -34,6 +34,7 @@
 	height: calc(97vh - 125px);
 	display: flex;
 	flex-direction: column-reverse;
+	overflow: scroll;
 }
 
 .msg__input {

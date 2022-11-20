@@ -1,11 +1,18 @@
 import styles from "./styles.module.css"
-import { useState } from "react"
+
+import { useState, useEffect } from "react"
+
 import axios from "axios"
 
-export default function Chat({ chatFetch, socket }) {
+export default function Chat({chatGroup, chatFetch, socket }) {
 
-	let chatData = chatFetch
-	let chats = chatData && chatData.chat
+	// const [chats, setChats] = useState(chatFetch)
+	const [cc, setcc] = useState(chatFetch)
+
+	useEffect(() => {
+		setcc(chatFetch)
+	}, [chatFetch])
+
 	const email = JSON.parse(localStorage.getItem("social-app")).email
 
 	const [message, setMessage] = useState("")
@@ -18,9 +25,9 @@ export default function Chat({ chatFetch, socket }) {
 		
 		try {
 			const url = "http://localhost:5000/group/chat"
-			const data = {groupName: chatData.name, message: message, from: email}
+			const data = {groupName: chatGroup, message: message, from: email}
 			socket.emit("send-message", data)
-			setMessage("")
+			setMessage(prev => "")
 			const res = await axios.post(url, data)
 			// console.log(res)
 		} catch (err) {
@@ -28,8 +35,12 @@ export default function Chat({ chatFetch, socket }) {
 		}
 	}
 
-
-	socket.on("recieve-message", data => console.log(data))
+	useEffect(() => {
+		socket.on("recieve-message", (date) => {
+			// console.log(date)
+			setcc(prev => [...prev, date])
+		})
+	}, [socket])
 
  
 
@@ -37,10 +48,10 @@ export default function Chat({ chatFetch, socket }) {
 		<div className={styles.chat__container}>
 			<div className={styles.chat__userName}>
 				<div className={styles.chat__profile} style={{background: "#BC6565"}}></div>
-				<div className={styles.chat__firstName}>{chatData && chatData.name}</div>
+				<div className={styles.chat__firstName}>{chatGroup}</div>
 			</div>
 			<div className={styles.list__chats}>
-				{chats && chats.map((item, index) => {
+				{cc && cc.map((item, index) => {
 					return (
 						<div className={styles.divBox} key={index} style={item.from === email ? {justifyContent: "flex-end"} : {}}>
 							<div className={styles.message__actual} style={item.from === email ? {background: "#5F669B"} : {}} >{item.message}</div>
